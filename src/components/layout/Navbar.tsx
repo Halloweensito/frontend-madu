@@ -19,7 +19,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 export const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false); // ✨ Nuevo estado para scroll
-    
+
     const location = useLocation();
     const navigate = useNavigate();
     const { user, signOut, isAdmin } = useAuth();
@@ -79,66 +79,68 @@ export const Navbar = () => {
 
                     {/* DERECHA: Acciones */}
                     <div className='flex-1 flex justify-end items-center gap-2 sm:gap-6 text-stone-600'>
-                        
-                        {/* Search Icon - Oculto en móvil (asumiendo que está en el Sidebar) */}
+
+                        {/* Search Icon - Visible en todas las pantallas */}
                         <Link
                             to="/search"
-                            className="hidden sm:block p-2 hover:bg-black/5 rounded-full transition-colors"
+                            className="p-2 hover:bg-black/5 rounded-full transition-colors"
                             aria-label="Buscar"
                         >
                             <Search strokeWidth={1.5} size={22} />
                         </Link>
 
-                        {/* User / Login Logic */}
-                        {user ? (
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <button className="focus:outline-none rounded-full ring-offset-2 hover:ring-2 ring-stone-200 transition-all">
-                                        <Avatar className="h-9 w-9">
-                                            <AvatarImage src={user.user_metadata?.avatar_url} />
-                                            <AvatarFallback className="bg-stone-100 text-stone-600 text-xs font-medium border border-stone-200">
-                                                {/* ✨ Safe check para email */}
-                                                {user.email?.charAt(0).toUpperCase() || "U"}
-                                            </AvatarFallback>
-                                        </Avatar>
-                                    </button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end" className="w-56 mt-2">
-                                    <DropdownMenuLabel>
-                                        <div className="flex flex-col space-y-1">
-                                            <p className="text-sm font-medium leading-none">Mi Cuenta</p>
-                                            <p className="text-xs leading-none text-muted-foreground truncate">
-                                                {user.email}
-                                            </p>
-                                        </div>
-                                    </DropdownMenuLabel>
-                                    <DropdownMenuSeparator />
+                        {/* User / Login Logic - Oculto en móvil, se maneja en SidebarMenu */}
+                        <div className="hidden sm:block">
+                            {user ? (
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <button className="focus:outline-none rounded-full ring-offset-2 hover:ring-2 ring-stone-200 transition-all">
+                                            <Avatar className="h-9 w-9">
+                                                <AvatarImage src={user.user_metadata?.avatar_url} />
+                                                <AvatarFallback className="bg-stone-100 text-stone-600 text-xs font-medium border border-stone-200">
+                                                    {/* ✨ Safe check para email */}
+                                                    {user.email?.charAt(0).toUpperCase() || "U"}
+                                                </AvatarFallback>
+                                            </Avatar>
+                                        </button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end" className="w-56 mt-2">
+                                        <DropdownMenuLabel>
+                                            <div className="flex flex-col space-y-1">
+                                                <p className="text-sm font-medium leading-none">Mi Cuenta</p>
+                                                <p className="text-xs leading-none text-muted-foreground truncate">
+                                                    {user.email}
+                                                </p>
+                                            </div>
+                                        </DropdownMenuLabel>
+                                        <DropdownMenuSeparator />
 
-                                    {isAdmin && (
-                                        <>
-                                            <DropdownMenuItem onClick={() => navigate('/admin')} className="cursor-pointer">
-                                                <Settings className="mr-2 h-4 w-4" />
-                                                Panel de Admin
-                                            </DropdownMenuItem>
-                                            <DropdownMenuSeparator />
-                                        </>
-                                    )}
+                                        {isAdmin && (
+                                            <>
+                                                <DropdownMenuItem onClick={() => navigate('/admin')} className="cursor-pointer">
+                                                    <Settings className="mr-2 h-4 w-4" />
+                                                    Panel de Admin
+                                                </DropdownMenuItem>
+                                                <DropdownMenuSeparator />
+                                            </>
+                                        )}
 
-                                    <DropdownMenuItem onClick={handleSignOut} className="text-red-600 cursor-pointer focus:text-red-600 focus:bg-red-50">
-                                        <LogOut className="mr-2 h-4 w-4" />
-                                        Cerrar Sesión
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        ) : (
-                            <Link
-                                to="/login"
-                                className="hidden sm:block p-2 hover:bg-black/5 rounded-full transition-colors"
-                                aria-label="Iniciar sesión"
-                            >
-                                <User strokeWidth={1.5} size={22} />
-                            </Link>
-                        )}
+                                        <DropdownMenuItem onClick={handleSignOut} className="text-red-600 cursor-pointer focus:text-red-600 focus:bg-red-50">
+                                            <LogOut className="mr-2 h-4 w-4" />
+                                            Cerrar Sesión
+                                        </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            ) : (
+                                <Link
+                                    to="/login"
+                                    className="p-2 hover:bg-black/5 rounded-full transition-colors"
+                                    aria-label="Iniciar sesión"
+                                >
+                                    <User strokeWidth={1.5} size={22} />
+                                </Link>
+                            )}
+                        </div>
 
                         {/* Carrito */}
                         <Cart />
@@ -146,7 +148,13 @@ export const Navbar = () => {
                 </div>
             </nav>
 
-            <SidebarMenu isOpen={isOpen} onClose={() => setIsOpen(false)} />
+            <SidebarMenu
+                isOpen={isOpen}
+                onClose={() => setIsOpen(false)}
+                user={user}
+                onSignOut={handleSignOut}
+                isAdmin={isAdmin}
+            />
         </>
     );
 };

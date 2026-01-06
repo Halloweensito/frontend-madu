@@ -1,6 +1,7 @@
 import React from 'react';
-import { X, Loader2 } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { X, Loader2, User, LogOut, Settings } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import type { User as SupabaseUser } from '@supabase/supabase-js';
 
 import {
   Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose,
@@ -9,6 +10,7 @@ import {
 import {
   Accordion, AccordionContent, AccordionItem, AccordionTrigger,
 } from '@/components/ui/accordion';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 // Importamos el Hook de React Query (Maneja caché y loading)
 import { useActiveCategoryTree } from '@/hooks/useCatalog';
@@ -17,6 +19,9 @@ import type { CategoryTree } from '@/types/types';
 interface SidebarMenuProps {
   isOpen: boolean;
   onClose: () => void;
+  user?: SupabaseUser | null;
+  onSignOut?: () => Promise<void>;
+  isAdmin?: boolean;
 }
 
 const BRAND_NAME = 'Pussycat';
@@ -27,10 +32,25 @@ const MENU_STATIC: { type: 'link'; name: string; href: string }[] = [
   { type: 'link', name: 'Contacto', href: '/contact' },
 ];
 
-export const SidebarMenu: React.FC<SidebarMenuProps> = ({ isOpen, onClose }) => {
+export const SidebarMenu: React.FC<SidebarMenuProps> = ({ isOpen, onClose, user, onSignOut, isAdmin }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   // ✅ REEMPLAZO: Usamos el hook en lugar de useEffect/useState manual
   const { data: categories = [], isLoading } = useActiveCategoryTree();
+
+  // Handler para cerrar sidebar y navegar
+  const handleNavigate = (path: string) => {
+    navigate(path);
+    onClose();
+  };
+
+  // Handler para sign out
+  const handleSignOut = async () => {
+    if (onSignOut) {
+      await onSignOut();
+    }
+    onClose();
+  };
 
 
 
@@ -58,15 +78,15 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ isOpen, onClose }) => 
         <AccordionItem value={key} className="border-none">
           <AccordionTrigger
             className={`py-2 ${level === 0
-                ? 'uppercase tracking-widest text-stone-600 font-medium text-xs'
-                : 'text-sm text-stone-600 pl-2'
+              ? 'uppercase tracking-widest text-stone-600 font-medium text-xs'
+              : 'text-sm text-stone-600 pl-2'
               } hover:text-black hover:no-underline justify-between`}
           >
             {node.name}
           </AccordionTrigger>
           <AccordionContent>
             <div className="flex flex-col space-y-1 pl-4 border-l border-stone-200 ml-1 py-1">
-              
+
               {/* --- MEJORA UX: Link para navegar a la categoría padre --- */}
               <SheetClose asChild>
                 <Link
@@ -89,7 +109,7 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ isOpen, onClose }) => 
   return (
     <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
 
-      <SheetContent side="left" className="w-87.5 p-0 overflow-y-auto bg-stone-50">
+      <SheetContent side="left" className="w-87.5 p-0 overflow-y-auto bg-stone-50 flex flex-col">
 
         {/* HEADER */}
         <SheetHeader className="p-8 border-b border-stone-200 text-left flex flex-row items-center justify-between">
@@ -106,8 +126,8 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ isOpen, onClose }) => 
           </SheetClose>
         </SheetHeader>
 
-        {/* NAVEGACIÓN */}
-        <nav className="p-6 space-y-2">
+        {/* NAVEGACIÓN - Crece para llenar el espacio */}
+        <nav className="p-6 space-y-2 flex-1">
 
           {/* 1. Links Estáticos */}
           {MENU_STATIC.map((item) => (
@@ -147,6 +167,59 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ isOpen, onClose }) => 
             </AccordionItem>
           </Accordion>
         </nav>
+
+        {/* SECCIÓN USUARIO - Solo móvil, al final del sidebar */}
+        <div className="sm:hidden px-6 py-4 border-t border-stone-200 bg-white/50 mt-auto">
+          {user ? (
+            // Usuario logueado
+            <div className="space-y-2">
+              {/* Info del usuario */}
+              <div className="flex items-center gap-3 py-3 border-b border-stone-200">
+                <Avatar className="h-9 w-9">
+                  <AvatarImage src={user.user_metadata?.avatar_url} />
+                  <AvatarFallback className="bg-stone-100 text-stone-600 text-xs font-medium border border-stone-200">
+                    {user.email?.charAt(0).toUpperCase() || "U"}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col">
+                  <span className="text-sm font-medium text-stone-800">Mi Cuenta</span>
+                  <span className="text-xs text-stone-500 truncate max-w-[180px]">{user.email}</span>
+                </div>
+              </div>
+
+              {/* Panel de Admin (si es admin) */}
+              {isAdmin && (
+                <button
+                  onClick={() => handleNavigate('/admin')}
+                  className="flex items-center gap-3 py-3 w-full text-stone-600 hover:text-black transition-colors"
+                >
+                  <Settings strokeWidth={1.5} size={20} />
+                  <span className="font-light text-sm uppercase tracking-[0.2em]">Panel de Admin</span>
+                </button>
+              )}
+
+              {/* Cerrar Sesión */}
+              <button
+                onClick={handleSignOut}
+                className="flex items-center gap-3 py-3 w-full text-red-600 hover:text-red-700 transition-colors"
+              >
+                <LogOut strokeWidth={1.5} size={20} />
+                <span className="font-light text-sm uppercase tracking-[0.2em]">Cerrar Sesión</span>
+              </button>
+            </div>
+          ) : (
+            // Usuario no logueado
+            <SheetClose asChild>
+              <Link
+                to="/login"
+                className="flex items-center gap-3 py-3 text-stone-600 hover:text-black transition-colors"
+              >
+                <User strokeWidth={1.5} size={20} />
+                <span className="font-light text-sm uppercase tracking-[0.2em]">Iniciar Sesión</span>
+              </Link>
+            </SheetClose>
+          )}
+        </div>
 
       </SheetContent>
     </Sheet>
