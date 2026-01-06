@@ -1,17 +1,20 @@
-import { Loader2 } from 'lucide-react';
+import { Loader2, AlertTriangle, RefreshCw } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useStoreFrontSections } from '@/hooks/useHome';
 import { useActiveCategories } from '@/hooks/useCatalog';
 import { SectionRenderer } from '@/components/home/SectionRenderer';
 import { HeroSection as StaticHeroSection } from '@/components/commerce/HeroSection';
 import { CategoryCard } from '@/components/commerce/CategoryCard';
+import { Button } from '@/components/ui/button';
 
 export const Home = () => {
   // Fetch dinámico de secciones configuradas
   const {
     data: sections,
     isLoading: isLoadingSections,
-    error: sectionsError
+    error: sectionsError,
+    refetch,
+    isFetching
   } = useStoreFrontSections();
 
   // Fallback: categorías activas (para cuando no hay secciones configuradas)
@@ -26,6 +29,38 @@ export const Home = () => {
     return (
       <div className="w-full min-h-screen bg-stone-50 flex items-center justify-center">
         <Loader2 className="animate-spin text-stone-400" size={40} />
+      </div>
+    );
+  }
+
+  // Estado de error con botón de reintento
+  if (sectionsError) {
+    return (
+      <div className="w-full min-h-[60vh] bg-stone-50 flex items-center justify-center">
+        <div className="text-center space-y-4 p-8">
+          <div className="flex justify-center">
+            <AlertTriangle className="text-amber-500" size={48} />
+          </div>
+          <h2 className="text-xl font-medium text-stone-800">
+            No pudimos cargar la página
+          </h2>
+          <p className="text-stone-500 max-w-md">
+            Hubo un problema al obtener el contenido. Por favor, intenta nuevamente.
+          </p>
+          <Button
+            onClick={() => refetch()}
+            disabled={isFetching}
+            variant="outline"
+            className="mt-4"
+          >
+            {isFetching ? (
+              <Loader2 className="animate-spin mr-2" size={16} />
+            ) : (
+              <RefreshCw className="mr-2" size={16} />
+            )}
+            {isFetching ? 'Cargando...' : 'Reintentar'}
+          </Button>
+        </div>
       </div>
     );
   }
@@ -46,10 +81,6 @@ export const Home = () => {
   // ========================================
   // FALLBACK: Comportamiento original si no hay secciones configuradas
   // ========================================
-
-  if (sectionsError) {
-    console.warn('Error loading home sections, using fallback:', sectionsError);
-  }
 
   // Determinar si hay número impar de categorías
   const isOdd = categories && categories.length % 2 !== 0;
