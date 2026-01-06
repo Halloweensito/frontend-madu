@@ -1,0 +1,3 @@
+src/pages/admin/products/utils/product-helpers.test.ts(43,9): error TS2741: Property 'parentId' is missing in type '{ id: number; name: string; slug: string; }' but required in type 'CategoryResponse'.
+src/pages/admin/products/utils/product-helpers.test.ts(81,9): error TS2741: Property 'parentId' is missing in type '{ id: number; name: string; slug: string; }' but required in type 'CategoryResponse'.
+src/pages/admin/products/utils/product-helpers.test.ts(124,9): error TS2741: Property 'parentId' is missing in type '{ id: number; name: string; slug: string; }' but required in type 'CategoryResponse'.
