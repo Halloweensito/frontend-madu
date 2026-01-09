@@ -6,6 +6,7 @@ import { Plus, Pencil, Trash2, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import {
     Table,
     TableBody,
@@ -49,6 +50,24 @@ export default function CategoryList() {
         },
     });
 
+    const getStatusBadge = (status: Status) => {
+        const styles = {
+            [Status.ACTIVE]: 'bg-green-50 text-green-700',
+            [Status.ARCHIVED]: 'bg-stone-100 text-stone-600',
+            [Status.INACTIVE]: 'bg-yellow-50 text-yellow-700',
+        };
+        const labels = {
+            [Status.ACTIVE]: 'Activa',
+            [Status.ARCHIVED]: 'Archivada',
+            [Status.INACTIVE]: 'Inactiva',
+        };
+        return (
+            <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${styles[status] || styles[Status.INACTIVE]}`}>
+                {labels[status] || 'Inactiva'}
+            </span>
+        );
+    };
+
     if (isLoading) {
         return (
             <div className="flex h-96 items-center justify-center">
@@ -66,25 +85,71 @@ export default function CategoryList() {
     }
 
     return (
-        <div className="space-y-6">
-            {/* Header */}
-            <div className="flex items-center justify-between">
+        <div className="space-y-4 sm:space-y-6">
+            {/* Header - responsive */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-stone-900">
+                    <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-stone-900">
                         Categorías
                     </h1>
-                    <p className="text-stone-500">
+                    <p className="text-stone-500 text-sm sm:text-base">
                         Gestiona las categorías de productos
                     </p>
                 </div>
-                <Button onClick={() => navigate('/admin/categorias/nueva')}>
+                <Button onClick={() => navigate('/admin/categorias/nueva')} className="w-full sm:w-auto">
                     <Plus className="mr-2 h-4 w-4" />
                     Nueva Categoría
                 </Button>
             </div>
 
-            {/* Table */}
-            <div className="rounded-md border">
+            {/* Vista móvil: Cards */}
+            <div className="block sm:hidden space-y-3">
+                {categories && categories.length > 0 ? (
+                    categories.map((category: CategoryResponse) => (
+                        <Card key={category.id} className="p-4">
+                            <div className="flex items-start justify-between gap-3">
+                                <div className="flex-1 min-w-0">
+                                    <div className="flex items-center gap-2 mb-1">
+                                        <h3 className="font-medium text-sm truncate">{category.name}</h3>
+                                        {getStatusBadge(category.status ?? Status.ACTIVE)}
+                                    </div>
+                                    <p className="text-xs text-stone-500 font-mono truncate">/{category.slug}</p>
+                                    {((category as any).parentName || category.parentId) && (
+                                        <p className="text-xs text-stone-400 mt-1">
+                                            Padre: {(category as any).parentName || category.parentId}
+                                        </p>
+                                    )}
+                                </div>
+                                <div className="flex gap-1">
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-8 w-8"
+                                        onClick={() => navigate(`/admin/categorias/editar/${category.id}`)}
+                                    >
+                                        <Pencil className="h-4 w-4" />
+                                    </Button>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-8 w-8"
+                                        onClick={() => setDeleteId(category.id)}
+                                    >
+                                        <Trash2 className="h-4 w-4 text-red-500" />
+                                    </Button>
+                                </div>
+                            </div>
+                        </Card>
+                    ))
+                ) : (
+                    <Card className="p-8 text-center text-stone-500">
+                        No hay categorías creadas
+                    </Card>
+                )}
+            </div>
+
+            {/* Vista desktop: Table */}
+            <div className="hidden sm:block rounded-md border">
                 <Table>
                     <TableHeader>
                         <TableRow>
@@ -104,18 +169,7 @@ export default function CategoryList() {
                                     <TableCell className="text-stone-500">
                                         {(category as any).parentName || category.parentId || '-'}
                                     </TableCell>
-                                    <TableCell>
-                                        <span
-                                            className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${category.status === Status.ACTIVE
-                                                ? 'bg-green-50 text-green-700'
-                                                : category.status === Status.ARCHIVED
-                                                    ? 'bg-stone-100 text-stone-600'
-                                                    : 'bg-yellow-50 text-yellow-700'
-                                                }`}
-                                        >
-                                            {category.status === Status.ACTIVE ? 'Activa' : category.status === Status.ARCHIVED ? 'Archivada' : 'Inactiva'}
-                                        </span>
-                                    </TableCell>
+                                    <TableCell>{getStatusBadge(category.status ?? Status.ACTIVE)}</TableCell>
                                     <TableCell className="text-right">
                                         <div className="flex justify-end gap-2">
                                             <Button

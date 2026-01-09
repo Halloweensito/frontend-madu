@@ -44,12 +44,16 @@ export const ImageUpload = forwardRef<ImageUploadHandle, ImageUploadProps>(({
 }, ref) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uiItems, setUiItems] = useState<UI_ImageItem[]>([]);
-  const isInternalUpdate = useRef(false);
+  // Track the last URLs we sent to parent to avoid race conditions
+  const lastSentUrlsRef = useRef<string>("");
 
   // Sincronización Inicial (Props -> State)
+  // Solo sincroniza si las URLs del servidor son diferentes a las que enviamos
   useEffect(() => {
-    if (isInternalUpdate.current) {
-      isInternalUpdate.current = false;
+    const propsUrls = value.map(v => v.url).sort().join(',');
+
+    // Si las URLs de props son iguales a las que enviamos, ignorar (es nuestro propio update)
+    if (propsUrls === lastSentUrlsRef.current) {
       return;
     }
 
@@ -71,8 +75,6 @@ export const ImageUpload = forwardRef<ImageUploadHandle, ImageUploadProps>(({
   }, [value]);
 
   const notifyParent = (items: UI_ImageItem[]) => {
-    isInternalUpdate.current = true;
-
     const allValidImages: ImageRequest[] = items
       .filter(item => item.status !== 'error')
       .map((item, index) => ({
@@ -80,6 +82,9 @@ export const ImageUpload = forwardRef<ImageUploadHandle, ImageUploadProps>(({
         position: index,
         tempId: item.id
       }));
+
+    // Guardar las URLs que estamos enviando para evitar que el useEffect las restaure
+    lastSentUrlsRef.current = allValidImages.map(i => i.url).sort().join(',');
 
     onChange(allValidImages);
   };
@@ -115,7 +120,7 @@ export const ImageUpload = forwardRef<ImageUploadHandle, ImageUploadProps>(({
       });
 
     } catch (error) {
-      logger.error("Upload failed", error);
+      logger.error("Upload failed:", error);
       setUiItems(prev => prev.map(item =>
         item.id === itemId ? { ...item, status: 'error' } : item
       ));
@@ -131,26 +136,43 @@ export const ImageUpload = forwardRef<ImageUploadHandle, ImageUploadProps>(({
       return;
     }
 
-    const newItems: UI_ImageItem[] = Array.from(files).map((file, idx) => ({
-      id: crypto.randomUUID(),
-      url: URL.createObjectURL(file),
-      originalFile: file,
-      position: uiItems.length + idx,
-      status: 'pending',
-      progress: 0
-    }));
+    try {
+      // Función para generar ID único (compatible con Android)
+      const generateId = () => {
+        try {
+          return crypto.randomUUID();
+        } catch {
+          // Fallback para navegadores que no soportan randomUUID
+          return 'id-' + Date.now() + '-' + Math.random().toString(36).substring(2, 11);
+        }
+      };
 
-    setUiItems(prev => {
-      const updated = [...prev, ...newItems];
-      setTimeout(() => notifyParent(updated), 0);
-      return updated;
-    });
+      const newItems: UI_ImageItem[] = Array.from(files).map((file, idx) => ({
+        id: generateId(),
+        url: URL.createObjectURL(file),
+        originalFile: file,
+        position: uiItems.length + idx,
+        status: 'pending' as const,
+        progress: 0
+      }));
 
-    if (fileInputRef.current) fileInputRef.current.value = "";
+      setUiItems(prev => {
+        const updated = [...prev, ...newItems];
+        setTimeout(() => notifyParent(updated), 0);
+        return updated;
+      });
 
-    newItems.forEach(item => {
-      if (item.originalFile) processUpload(item.id, item.originalFile);
-    });
+      if (fileInputRef.current) fileInputRef.current.value = "";
+
+      for (const item of newItems) {
+        if (item.originalFile) {
+          processUpload(item.id, item.originalFile);
+        }
+      }
+
+    } catch (error) {
+      logger.error("Error en handleFileSelect:", error);
+    }
   };
 
   const handleRemove = (id: string) => {

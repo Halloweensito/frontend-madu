@@ -71,8 +71,8 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        {/* Pedidos (Placeholder) */}
-        <Card className="h-full hover:shadow-md transition-shadow opacity-60">
+        {/* Pedidos */}
+        <Card className="h-full hover:shadow-md transition-shadow">
           <CardHeader>
             <div className="flex items-center gap-2">
               <ShoppingBag className="h-5 w-5 text-orange-600" />
@@ -83,9 +83,11 @@ export default function DashboardPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button variant="outline" className="w-full" disabled>
-              Próximamente
-            </Button>
+            <Link to="/admin/pedidos" className="w-full">
+              <Button variant="outline" className="w-full">
+                Ver pedidos
+              </Button>
+            </Link>
           </CardContent>
         </Card>
 

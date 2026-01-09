@@ -2,7 +2,7 @@ import { ApiError } from '@/utils/errors';
 import { logger } from '@/utils/logger';
 import { supabase } from '@/lib/supabase';
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api";
+const API_URL = import.meta.env.VITE_API_URL || "http://192.168.1.9:8080/api";
 
 export const http = async <T>(endpoint: string, options: RequestInit = {}): Promise<T> => {
   // Obtener token de sesión de Supabase
@@ -12,6 +12,12 @@ export const http = async <T>(endpoint: string, options: RequestInit = {}): Prom
   const defaultHeaders: Record<string, string> = {
     "Content-Type": "application/json"
   };
+
+  const isPublic = endpoint.startsWith('/public');
+
+  if (token && !isPublic) {
+    defaultHeaders["Authorization"] = `Bearer ${token}`;
+  }
 
   // Agregar Authorization header si hay token disponible
   if (token) {

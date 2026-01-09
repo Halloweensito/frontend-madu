@@ -122,16 +122,28 @@ export function AttributeForm({
           {(selectedGlobalId || isCustomMode) && (
             <div className="space-y-2">
               <Label>Valores</Label>
-              <Input
-                placeholder={
-                  selectedGlobalAttribute
-                    ? "Escribe un valor existente o nuevo y presiona Enter"
-                    : "Escribe valores y presiona Enter"
-                }
-                value={currentValueInput}
-                onChange={e => onCurrentValueInputChange(e.target.value)}
-                onKeyDown={onAddValue}
-              />
+              <div className="flex gap-2">
+                <Input
+                  placeholder={
+                    selectedGlobalAttribute
+                      ? "Escribe un valor..."
+                      : "Escribe valores..."
+                  }
+                  value={currentValueInput}
+                  onChange={e => onCurrentValueInputChange(e.target.value)}
+                  onKeyDown={onAddValue}
+                  className="flex-1"
+                />
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => onAddValue()}
+                  disabled={!currentValueInput.trim()}
+                  className="shrink-0"
+                >
+                  Agregar
+                </Button>
+              </div>
 
               {/* Current Values */}
               {currentValues.length > 0 && (

@@ -126,7 +126,7 @@ export const mapFormToPayload = (
     description: data.description || undefined,
     categoryId: data.categoryId,
     status: data.status || 'ACTIVE',
-    generalImages: uploadedImages.length > 0 ? uploadedImages : undefined,
+    generalImages: uploadedImages, // Siempre enviar array (vacío si no hay imágenes)
     price: data.defaultPrice ?? 0,
     stock: data.defaultStock ?? 0,
     variants,

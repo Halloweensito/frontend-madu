@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 
 import {
-  Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose,
+  Sheet, SheetContent, SheetHeader, SheetClose,
   SheetDescription,
 } from '@/components/ui/sheet';
 import {
@@ -12,8 +12,9 @@ import {
 } from '@/components/ui/accordion';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-// Importamos el Hook de React Query (Maneja caché y loading)
 import { useActiveCategoryTree } from '@/hooks/useCatalog';
+import { usePublicSiteSettings } from '@/hooks/useSiteSettings';
+import { BrandLogo } from '@/components/ui/brand-logo';
 import type { CategoryTree } from '@/types/types';
 
 interface SidebarMenuProps {
@@ -24,19 +25,20 @@ interface SidebarMenuProps {
   isAdmin?: boolean;
 }
 
-const BRAND_NAME = 'Pussycat';
-
 // Tipado estricto para el menú estático
 const MENU_STATIC: { type: 'link'; name: string; href: string }[] = [
   { type: 'link', name: 'Inicio', href: '/' },
-  { type: 'link', name: 'Contacto', href: '/contact' },
+  { type: 'link', name: 'Contacto', href: '/contacto' },
 ];
 
 export const SidebarMenu: React.FC<SidebarMenuProps> = ({ isOpen, onClose, user, onSignOut, isAdmin }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  // ✅ REEMPLAZO: Usamos el hook en lugar de useEffect/useState manual
   const { data: categories = [], isLoading } = useActiveCategoryTree();
+  const { data: settings, isLoading: isLoadingSettings } = usePublicSiteSettings();
+
+  const siteName = settings?.siteName || 'Pussycat';
+  const logoUrl = settings?.logoUrl;
 
   // Handler para cerrar sidebar y navegar
   const handleNavigate = (path: string) => {
@@ -113,9 +115,12 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ isOpen, onClose, user,
 
         {/* HEADER */}
         <SheetHeader className="p-8 border-b border-stone-200 text-left flex flex-row items-center justify-between">
-          <SheetTitle className="font-light text-2xl tracking-[0.25em] uppercase text-black">
-            {BRAND_NAME}
-          </SheetTitle>
+          <BrandLogo
+            logoUrl={logoUrl}
+            siteName={siteName}
+            isLoading={isLoadingSettings}
+            size="sm"
+          />
           <SheetDescription className="sr-only">
             Menú de navegación principal para explorar categorías y colecciones.
           </SheetDescription>

@@ -1,9 +1,11 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
 @layer base {
+
   /* 1. Fondo y Color de Texto Global */
   body {
     @apply bg-stone-50 text-stone-600 antialiased selection:bg-stone-200;
@@ -11,7 +13,12 @@
 
   /* 2. Títulos Elegantes (H1, H2, H3...) */
   /* Aplicará automáticamente mayúsculas, letras finas y espaciadas a todos los títulos */
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-light tracking-[0.15em] uppercase text-stone-900;
   }
 
@@ -19,6 +26,11 @@
   /* Hace que todos los botones nativos tengan el cursor de mano */
   button {
     @apply cursor-pointer;
+  }
+
+  /* 4. Animación lenta para spinner de mantenimiento */
+  .animate-spin-slow {
+    animation: spin 3s linear infinite;
   }
 }
 
@@ -237,7 +249,31 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* ReactQuill Editor Styles */
+.ql-toolbar.ql-snow {
+  border-color: hsl(var(--border));
+  background: hsl(var(--muted));
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.ql-container.ql-snow {
+  border-color: hsl(var(--border));
+  font-family: inherit;
+  font-size: 1rem;
+  min-height: 200px;
+}
+
+.ql-editor {
+  min-height: 200px;
+}
+
+.ql-editor.ql-blank::before {
+  color: hsl(var(--muted-foreground));
+  font-style: normal;
 }

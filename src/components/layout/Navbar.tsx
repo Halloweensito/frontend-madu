@@ -3,8 +3,10 @@ import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { TextAlignJustify, Search, User, LogOut, Settings } from 'lucide-react';
 
 import { useAuth } from '@/hooks/useAuth';
-import { SidebarMenu } from './SidebarMenu.tsx'; // Asegúrate que la ruta sea correcta
+import { usePublicSiteSettings } from '@/hooks/useSiteSettings';
+import { SidebarMenu } from './SidebarMenu.tsx';
 import { Cart } from '@/components/cart/Cart';
+import { BrandLogo } from '@/components/ui/brand-logo';
 
 import {
     DropdownMenu,
@@ -23,6 +25,10 @@ export const Navbar = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const { user, signOut, isAdmin } = useAuth();
+    const { data: settings, isLoading: isLoadingSettings } = usePublicSiteSettings();
+
+    const siteName = settings?.siteName || 'Pussycat';
+    const logoUrl = settings?.logoUrl;
 
     const isProductPage = location.pathname.startsWith('/producto/');
 
@@ -69,12 +75,17 @@ export const Navbar = () => {
                         </button>
                     </div>
 
-                    {/* CENTRO: Logo */}
+                    {/* CENTRO: Logo (imagen o texto) */}
                     <Link
                         to="/"
-                        className='font-light text-2xl tracking-[0.25em] uppercase cursor-pointer text-black select-none hover:opacity-70 transition-opacity'
+                        className='hover:opacity-70 transition-opacity'
                     >
-                        Pussycat
+                        <BrandLogo
+                            logoUrl={logoUrl}
+                            siteName={siteName}
+                            isLoading={isLoadingSettings}
+                            size="md"
+                        />
                     </Link>
 
                     {/* DERECHA: Acciones */}

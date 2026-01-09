@@ -89,7 +89,7 @@ export function ImageUploadItem({
                         e.stopPropagation();
                         onRemove();
                     }}
-                    className="absolute top-2 right-2 p-1.5 bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-700 z-30 cursor-pointer"
+                    className="absolute top-2 right-2 p-1.5 bg-red-600 text-white rounded-full opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity hover:bg-red-700 z-30 cursor-pointer"
                     onPointerDown={(e) => e.stopPropagation()}
                 >
                     <X className="h-4 w-4" />
