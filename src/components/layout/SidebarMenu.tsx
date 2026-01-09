@@ -5,7 +5,7 @@ import type { User as SupabaseUser } from '@supabase/supabase-js';
 
 import {
   Sheet, SheetContent, SheetHeader, SheetClose,
-  SheetDescription,
+  SheetDescription, SheetTitle,
 } from '@/components/ui/sheet';
 import {
   Accordion, AccordionContent, AccordionItem, AccordionTrigger,
@@ -115,6 +115,7 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ isOpen, onClose, user,
 
         {/* HEADER */}
         <SheetHeader className="p-8 border-b border-stone-200 text-left flex flex-row items-center justify-between">
+          <SheetTitle className="sr-only">Menú de navegación</SheetTitle>
           <BrandLogo
             logoUrl={logoUrl}
             siteName={siteName}
