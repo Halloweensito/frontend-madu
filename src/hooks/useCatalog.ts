@@ -72,7 +72,9 @@ export const useCreateCategory = () => {
     mutationFn: (data: CreateCategoryRequest) => categoryService.createCategory(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['categories'] });
+      queryClient.invalidateQueries({ queryKey: ['categories', 'active'] });
       queryClient.invalidateQueries({ queryKey: ['categoryTree'] });
+      queryClient.invalidateQueries({ queryKey: ['categoryTree', 'active'] });
     }
   });
 };
@@ -86,7 +88,9 @@ export const useUpdateCategory = () => {
       categoryService.updateCategory(id, data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['categories'] });
+      queryClient.invalidateQueries({ queryKey: ['categories', 'active'] });
       queryClient.invalidateQueries({ queryKey: ['categoryTree'] });
+      queryClient.invalidateQueries({ queryKey: ['categoryTree', 'active'] });
       queryClient.invalidateQueries({ queryKey: ['category', 'id', variables.id] });
     }
   });
@@ -100,7 +104,9 @@ export const useDeleteCategory = () => {
     mutationFn: (id: number) => categoryService.deleteCategory(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['categories'] });
+      queryClient.invalidateQueries({ queryKey: ['categories', 'active'] });
       queryClient.invalidateQueries({ queryKey: ['categoryTree'] });
+      queryClient.invalidateQueries({ queryKey: ['categoryTree', 'active'] });
     }
   });
 };

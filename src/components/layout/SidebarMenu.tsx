@@ -93,9 +93,9 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ isOpen, onClose, user,
               <SheetClose asChild>
                 <Link
                   to={`/categoria/${node.slug}`}
-                  className="text-xs font-bold text-black py-2 block pl-2 underline decoration-stone-300 underline-offset-4 mb-2"
+                  className="text-xs font-medium text-stone-800 py-2 block pl-2 uppercase tracking-[0.15em] border-b border-stone-400 inline-block pb-1 mb-2 hover:text-black hover:border-stone-600 transition-colors"
                 >
-                  Ver todo {node.name}
+                  Ver Colección
                 </Link>
               </SheetClose>
               {/* ------------------------------------------------------- */}
