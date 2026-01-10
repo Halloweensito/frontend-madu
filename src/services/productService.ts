@@ -37,9 +37,15 @@ export const productService = {
     return http<PageResponse<ProductResponse>>(`/products/store${query ? `?${query}` : ''}`);
   },
 
-  // GET /api/products/category/{slug} - Productos por categoría
-  getProductsByCategorySlug: (slug: string) =>
-    http<ProductResponse[]>(`/products/category/${slug}`),
+  // GET /api/products/category/{slug} - Productos por categoría (paginado)
+  getProductsByCategorySlug: (slug: string, params?: { page?: number; size?: number }) => {
+    const searchParams = new URLSearchParams();
+    if (params?.page !== undefined) searchParams.append('page', params.page.toString());
+    if (params?.size !== undefined) searchParams.append('size', params.size.toString());
+
+    const query = searchParams.toString();
+    return http<PageResponse<ProductResponse>>(`/products/category/${slug}${query ? `?${query}` : ''}`);
+  },
 
   // GET /api/products/{slug} - Detalle de producto por slug
   getProductBySlug: (slug: string) =>

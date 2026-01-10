@@ -5,6 +5,8 @@ import { useState, useMemo } from 'react';
 import { Loader2, AlertCircle, Package, RefreshCw, Eye, MoreHorizontal, Calendar, ShoppingBag, Search, Filter, X } from 'lucide-react';
 import { toast } from 'sonner';
 
+import { PaginationControls } from '@/components/ui/pagination-controls';
+
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -322,6 +324,8 @@ function OrderFilters({
 export default function OrderList() {
     const [filters, setFilters] = useState<OrderFilterRequest>({});
     const [selectedOrder, setSelectedOrder] = useState<OrderSummaryResponse | null>(null);
+    const [currentPage, setCurrentPage] = useState(0);
+    const pageSize = 10;
 
     // Usamos useMemo para evitar re-renders innecesarios
     const activeFilters = useMemo(() => {
@@ -333,7 +337,7 @@ export default function OrderList() {
         return Object.keys(clean).length > 0 ? clean : undefined;
     }, [filters]);
 
-    const { data: ordersData, isLoading, error, refetch, isRefetching } = useOrders(0, 20, activeFilters);
+    const { data: ordersData, isLoading, error, refetch, isRefetching } = useOrders(currentPage, pageSize, activeFilters);
     const updateStatus = useUpdateOrderStatus();
 
     const handleStatusChange = async (orderId: number, newStatus: OrderStatus) => {
@@ -347,6 +351,7 @@ export default function OrderList() {
 
     const handleClearFilters = () => {
         setFilters({});
+        setCurrentPage(0); // Reset to first page when clearing filters
     };
 
     const orders = ordersData?.content || [];
@@ -377,7 +382,10 @@ export default function OrderList() {
             {/* Filtros */}
             <OrderFilters
                 filters={filters}
-                onFiltersChange={setFilters}
+                onFiltersChange={(newFilters) => {
+                    setFilters(newFilters);
+                    setCurrentPage(0); // Reset to first page when filters change
+                }}
                 onClear={handleClearFilters}
             />
 
@@ -509,6 +517,18 @@ export default function OrderList() {
                         </TableBody>
                     </Table>
                 </div>
+            )}
+
+            {/* Paginación */}
+            {!isLoading && !error && ordersData && (
+                <PaginationControls
+                    currentPage={currentPage}
+                    totalPages={ordersData.totalPages}
+                    totalElements={ordersData.totalElements}
+                    pageSize={pageSize}
+                    onPageChange={setCurrentPage}
+                    isLoading={isLoading}
+                />
             )}
 
             {/* Dialog de detalle */}

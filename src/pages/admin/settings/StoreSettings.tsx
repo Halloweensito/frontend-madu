@@ -38,34 +38,37 @@ export default function StoreSettings() {
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-2xl font-bold tracking-tight">Configuración del Sitio</h1>
-                    <p className="text-muted-foreground">
-                        Personaliza tu tienda, redes sociales y footer
-                    </p>
-                </div>
-                <Button
-                    onClick={form.handleSubmit(onSubmit)}
-                    disabled={isSaving}
-                >
-                    {isSaving ? (
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    ) : (
-                        <Save className="mr-2 h-4 w-4" />
-                    )}
-                    Guardar Cambios
-                </Button>
+            <div>
+                <h1 className="text-2xl font-bold tracking-tight">Configuración del Sitio</h1>
+                <p className="text-muted-foreground">
+                    Personaliza tu tienda, redes sociales y footer
+                </p>
             </div>
 
             {/* Formulario con Acordeón */}
-            <form onSubmit={form.handleSubmit(onSubmit)} className="pb-32">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <Accordion type="multiple" defaultValue={['branding', 'social']} className="space-y-4">
                     <BrandingSection form={form} />
                     <SocialSection form={form} />
                     <FooterSection form={form} />
                 </Accordion>
                 <MaintenanceCard form={form} />
+
+                {/* Botón Guardar al final */}
+                <div className="flex justify-end pt-4 border-t">
+                    <Button
+                        type="submit"
+                        disabled={isSaving}
+                        className="w-full sm:w-auto"
+                    >
+                        {isSaving ? (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                            <Save className="mr-2 h-4 w-4" />
+                        )}
+                        Guardar Cambios
+                    </Button>
+                </div>
             </form>
         </div>
     );

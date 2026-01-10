@@ -239,10 +239,13 @@ export const useProductById = (id: number | undefined) => {
   });
 };
 
-export const useProductsByCategorySlug = (slug: string | undefined) => {
+export const useProductsByCategorySlug = (
+  slug: string | undefined,
+  params?: { page?: number; size?: number }
+) => {
   return useQuery({
-    queryKey: ['products', 'category', 'slug', slug],
-    queryFn: () => productService.getProductsByCategorySlug(String(slug)),
+    queryKey: ['products', 'category', 'slug', slug, params],
+    queryFn: () => productService.getProductsByCategorySlug(String(slug), params),
     enabled: slug != null && slug !== '',
   });
 };

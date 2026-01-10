@@ -31,7 +31,7 @@ export const HeroSection = ({
       {/* IMAGEN DE FONDO */}
       <div className="absolute inset-0">
         <img
-          src={imageUrl}
+          src={imageUrl || defaults.imageUrl}
           alt={title}
           fetchPriority="high"
           loading="eager"

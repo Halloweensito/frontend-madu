@@ -6,6 +6,7 @@ import { toast } from "sonner";
 
 import { columns } from "./columns";
 import { DataTable } from "@/components/ui/data-table";
+import { PaginationControls } from "@/components/ui/pagination-controls";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -171,7 +172,10 @@ function MobileProductCard({ product }: { product: ProductResponse }) {
 
 export default function ProductList() {
   const navigate = useNavigate();
-  const { data: products, isLoading, error } = useProducts();
+  const [currentPage, setCurrentPage] = useState(0);
+  const pageSize = 10;
+
+  const { data: productsData, isLoading, error } = useProducts({ page: currentPage, size: pageSize });
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -214,8 +218,8 @@ export default function ProductList() {
       {/* Vista móvil: Cards */}
       {!isLoading && !error && (
         <div className="block sm:hidden space-y-3">
-          {products?.content && products.content.length > 0 ? (
-            products.content.map((product) => (
+          {productsData?.content && productsData.content.length > 0 ? (
+            productsData.content.map((product) => (
               <MobileProductCard key={product.id} product={product} />
             ))
           ) : (
@@ -229,8 +233,20 @@ export default function ProductList() {
       {/* Vista desktop: Tabla */}
       {!isLoading && !error && (
         <div className="hidden sm:block bg-white rounded-md border border-stone-200 shadow-sm overflow-hidden">
-          <DataTable columns={columns} data={products?.content || []} />
+          <DataTable columns={columns} data={productsData?.content || []} />
         </div>
+      )}
+
+      {/* Paginación */}
+      {!isLoading && !error && productsData && (
+        <PaginationControls
+          currentPage={currentPage}
+          totalPages={productsData.totalPages}
+          totalElements={productsData.totalElements}
+          pageSize={pageSize}
+          onPageChange={setCurrentPage}
+          isLoading={isLoading}
+        />
       )}
     </div>
   );

@@ -74,18 +74,18 @@ export const BrandingSection = ({ form }: BrandingSectionProps) => {
                         </p>
                     </div>
 
-                    {/* Favicon */}
+                    {/* Ícono de pestaña */}
                     <div className="space-y-2">
-                        <Label>Favicon</Label>
+                        <Label>Ícono de pestaña</Label>
                         <SingleImageUpload
                             value={form.watch('faviconUrl')}
                             onChange={(url) => form.setValue('faviconUrl', url || '')}
                             folder="branding"
-                            placeholder="Subir favicon"
+                            placeholder="Subir ícono"
                             aspectRatio="square"
                         />
                         <p className="text-xs text-muted-foreground">
-                            Recomendado: 32x32px o 64x64px
+                            Ícono pequeño que aparece en la pestaña del navegador. Recomendado: 32x32px
                         </p>
                     </div>
                 </div>
