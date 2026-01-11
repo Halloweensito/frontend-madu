@@ -103,7 +103,7 @@ export function Search() {
                                             />
                                         </div>
                                         <div className="p-4">
-                                            <h3 className="font-medium text-stone-900 mb-1 line-clamp-2">
+                                            <h3 className="font-light text-stone-900 mb-1 line-clamp-2">
                                                 {product.name}
                                             </h3>
                                             {product.variants && product.variants.length > 0 && (

@@ -33,7 +33,7 @@ export function CartFooter({
                 <Button
                     onClick={onCheckout}
                     disabled={isValidating}
-                    className="w-full bg-black hover:bg-stone-800 text-white shadow-sm transition-colors"
+                    className="w-full bg-stone-900 hover:bg-stone-800 text-white shadow-sm transition-colors font-light tracking-wide"
                     size="lg"
                 >
                     {isValidating ? (
@@ -43,7 +43,7 @@ export function CartFooter({
                         </>
                     ) : (
                         <>
-                            <MessageCircle className="mr-2 h-5 w-5" />
+                            <MessageCircle className="mr-2 h-5 w-5" strokeWidth={1.5} />
                             Completar pedido
                         </>
                     )}

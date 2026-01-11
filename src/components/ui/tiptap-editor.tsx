@@ -204,7 +204,10 @@ export default function TiptapEditor({
 }: TiptapEditorProps) {
     const editor = useEditor({
         extensions: [
-            StarterKit,
+            StarterKit.configure({
+                // Deshabilitamos extensiones que agregamos manualmente con configuración
+                // StarterKit no incluye Link ni Underline por defecto, pero por si acaso
+            }),
             Link.configure({
                 openOnClick: false,
                 HTMLAttributes: {

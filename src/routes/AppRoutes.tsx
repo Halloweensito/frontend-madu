@@ -13,6 +13,7 @@ import { CategoryPage } from "../pages/public/CategoryPage.tsx";
 import { Search } from "../pages/public/Search.tsx";
 import DynamicPage from "@/pages/public/DynamicPage.tsx";
 import ContactPage from "@/pages/public/ContactPage.tsx";
+import NotFoundPage from "@/pages/public/NotFoundPage.tsx";
 import Login from "@/pages/auth/Login";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 
@@ -66,6 +67,9 @@ export const AppRoutes = () => {
 
         {/* Página de Contacto (hardcoded) */}
         <Route path="/contacto" element={<ContactPage />} />
+
+        {/* Página 404 (explícita para evitar loop con DynamicPage) */}
+        <Route path="/404" element={<NotFoundPage />} />
 
         {/* Páginas dinámicas (debe ir al final para no interferir con otras rutas) */}
         <Route path="/:slug" element={<DynamicPage />} />
@@ -172,15 +176,10 @@ export const AppRoutes = () => {
         </Route>
       </Route>
 
-      {/* 404 NOT FOUND */}
-      <Route
-        path="*"
-        element={
-          <div className="h-min pt-32 text-center text-red-500">
-            Página no encontrada
-          </div>
-        }
-      />
+      {/* 404 NOT FOUND - Catch-all */}
+      <Route element={<Layout />}>
+        <Route path="*" element={<NotFoundPage />} />
+      </Route>
     </Routes>
   );
 };

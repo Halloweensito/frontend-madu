@@ -8,7 +8,6 @@ import { ProductImageGallery } from '@/components/commerce/ProductImageGallery';
 import { ProductInfo } from '@/components/commerce/ProductInfo';
 import { ProductAttributeSelector } from '@/components/commerce/ProductAttributeSelector.tsx';
 import { ProductPurchaseButton } from '@/components/commerce/ProductPurchaseButton';
-import { ProductExtraInfo } from '@/components/commerce/ProductExtraInfo';
 import { ProductSpecifications } from '@/components/commerce/ProductSpecifications';
 
 export const ProductDetail: React.FC = () => {
@@ -120,9 +119,6 @@ export const ProductDetail: React.FC = () => {
 
             {/* Botón de Compra */}
             <ProductPurchaseButton product={product} variant={selectedVariant} />
-
-            {/* Info Extra */}
-            <ProductExtraInfo />
 
             {/* Especificaciones */}
             <ProductSpecifications variant={selectedVariant} />

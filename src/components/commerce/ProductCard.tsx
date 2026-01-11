@@ -70,7 +70,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) =>
             />
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-stone-200 to-stone-300 flex items-center justify-center">
-              <span className="text-stone-400 text-4xl">📷</span>
+              <span className="text-stone-400 text-4xl">✕</span>
             </div>
           )}
 

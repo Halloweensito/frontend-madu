@@ -37,7 +37,7 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ isOpen, onClose, user,
   const { data: categories = [], isLoading } = useActiveCategoryTree();
   const { data: settings, isLoading: isLoadingSettings } = usePublicSiteSettings();
 
-  const siteName = settings?.siteName || 'Pussycat';
+  const siteName = settings?.siteName || 'Mi Tienda';
   const logoUrl = settings?.logoUrl;
 
   // Handler para cerrar sidebar y navegar

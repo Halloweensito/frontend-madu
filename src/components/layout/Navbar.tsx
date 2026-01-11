@@ -27,7 +27,7 @@ export const Navbar = () => {
     const { user, signOut, isAdmin } = useAuth();
     const { data: settings, isLoading: isLoadingSettings } = usePublicSiteSettings();
 
-    const siteName = settings?.siteName || 'Pussycat';
+    const siteName = settings?.siteName || 'Mi Tienda';
     const logoUrl = settings?.logoUrl;
 
     const isProductPage = location.pathname.startsWith('/producto/');

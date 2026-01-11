@@ -23,8 +23,9 @@ export const usePublicFooter = () => {
     return useQuery({
         queryKey: footerKeys.public(),
         queryFn: footerService.getPublicFooter,
-        staleTime: 1000 * 30, // 30 segundos - más rápido para ver cambios
+        staleTime: 1000 * 10, // 10 segundos - actualizaciones rápidas
         gcTime: 1000 * 60 * 5, // 5 minutos
+        refetchOnWindowFocus: true, // Refetch al volver a la ventana
     });
 };
 

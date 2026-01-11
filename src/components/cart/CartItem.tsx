@@ -84,7 +84,7 @@ export function CartItem({ item, onUpdateQuantity, onRemove }: CartItemProps) {
                         onClick={() => onRemove(item.variantId)}
                         className="text-xs font-medium text-red-500 hover:text-red-700 flex items-center gap-1 transition-colors"
                     >
-                        <Trash2 className="h-3.5 w-3.5" />
+                        <Trash2 className="h-3.5 w-3.5" strokeWidth={1.5} />
                         <span className="sr-only sm:not-sr-only sm:inline">Eliminar</span>
                     </button>
                 </div>

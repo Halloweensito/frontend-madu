@@ -43,7 +43,11 @@ export const http = async <T>(endpoint: string, options: RequestInit = {}): Prom
         method
       );
 
-      logger.error('API Error:', error.toString());
+      // No loguear errores 404 de páginas dinámicas (son esperados)
+      const isExpected404 = res.status === 404 && endpoint.startsWith('/public/pages/');
+      if (!isExpected404) {
+        logger.error('API Error:', error.toString());
+      }
       throw error;
     }
 

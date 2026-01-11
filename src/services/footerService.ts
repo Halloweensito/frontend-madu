@@ -13,7 +13,9 @@ import type {
 // ==================== PÚBLICO ====================
 
 const getPublicFooter = (): Promise<FooterSectionPublic[]> =>
-    http<FooterSectionPublic[]>('/public/footer');
+    http<FooterSectionPublic[]>('/public/footer', {
+        cache: 'no-store', // Evitar cache del navegador - el backend tiene cache propio
+    });
 
 // ==================== ADMIN - SECCIONES ====================
 

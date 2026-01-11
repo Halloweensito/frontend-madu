@@ -36,14 +36,14 @@ export const ProductPurchaseButton: React.FC<ProductPurchaseButtonProps> = ({ pr
         type="button"
         onClick={handleAddToCart}
         disabled={!variant || variant.stock === 0}
-        className={`w-full py-4 text-sm uppercase tracking-widest transition-colors shadow-sm flex items-center justify-center gap-2 ${added
-            ? 'bg-green-600 text-white'
-            : 'bg-stone-900 text-white hover:bg-stone-800 disabled:bg-stone-200 disabled:text-stone-400 disabled:cursor-not-allowed'
+        className={`w-full py-4 text-sm font-light uppercase tracking-widest transition-colors shadow-sm flex items-center justify-center gap-2 ${added
+          ? 'bg-green-600 text-white'
+          : 'bg-stone-900 text-white hover:bg-stone-800 disabled:bg-stone-200 disabled:text-stone-400 disabled:cursor-not-allowed'
           }`}
       >
         {added ? (
           <>
-            <Check size={18} />
+            <Check size={18} strokeWidth={1.5} />
             Agregado al Carrito
           </>
         ) : !variant ? (
@@ -52,7 +52,7 @@ export const ProductPurchaseButton: React.FC<ProductPurchaseButtonProps> = ({ pr
           'Sin Stock'
         ) : (
           <>
-            <ShoppingCart size={18} />
+            <ShoppingCart size={18} strokeWidth={1.5} />
             Agregar al Carrito
           </>
         )}
@@ -61,7 +61,7 @@ export const ProductPurchaseButton: React.FC<ProductPurchaseButtonProps> = ({ pr
       {/* Alerta de stock bajo */}
       {variant && variant.stock > 0 && variant.stock < 5 && (
         <p className="text-xs text-orange-600 flex items-center gap-1">
-          <AlertCircle size={12} />
+          <AlertCircle size={12} strokeWidth={1.5} />
           ¡Solo quedan {variant.stock} unidades!
         </p>
       )}

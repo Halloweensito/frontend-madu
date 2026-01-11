@@ -36,7 +36,7 @@ export const CategoryPage: React.FC = () => {
   useEffect(() => {
     if (category && category.name) {
       const prev = document.title;
-      document.title = `${category.name} - Pussycat`;
+      document.title = `${category.name} - Mi Tienda`;
 
       return () => {
         document.title = prev;

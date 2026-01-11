@@ -147,21 +147,8 @@ export default function ContactPage() {
                                 </Button>
                             )}
 
-                            {whatsappUrl && (
-                                <Button
-                                    variant="outline"
-                                    className="w-full justify-start gap-3 bg-green-50 border-green-200 hover:bg-green-100"
-                                    asChild
-                                >
-                                    <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-                                        <MessageCircle className="h-5 w-5 text-green-600" />
-                                        WhatsApp
-                                    </a>
-                                </Button>
-                            )}
-
                             {/* Si no hay redes configuradas */}
-                            {!instagramUrl && !facebookUrl && !whatsappUrl && (
+                            {!instagramUrl && !facebookUrl && (
                                 <p className="text-muted-foreground italic">
                                     Redes sociales no configuradas.
                                 </p>

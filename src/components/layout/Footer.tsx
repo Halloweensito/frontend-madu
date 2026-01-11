@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Instagram, Facebook, Send } from 'lucide-react';
+import { Instagram, Facebook } from 'lucide-react';
 import { usePublicSiteSettings } from '@/hooks/useSiteSettings';
 import { usePublicFooter } from '@/hooks/useFooter';
 import { BrandLogo } from '@/components/ui/brand-logo';
@@ -16,16 +16,16 @@ export const Footer = () => {
   const { data: footerSections = [] } = usePublicFooter();
 
   // Valores con fallback para cuando no hay settings cargados
-  const siteName = settings?.siteName || 'PUSSYCAT';
+  const siteName = settings?.siteName || 'Mi Tienda';
   const logoUrl = settings?.logoUrl;
-  const siteDescription = settings?.footerText || 'Lencería de diseño pensada para empoderar tu sensualidad. Telas delicadas, cortes atrevidos y la elegancia que mereces.';
+  const siteDescription = settings?.footerText || 'Tu tienda online de confianza. Productos de calidad con envío a todo el país.';
 
   // Construir URLs a partir de usuarios/números
   const instagramUrl = buildInstagramUrl(settings?.instagramUrl);
   const facebookUrl = buildFacebookUrl(settings?.facebookUrl);
 
-  // Determinar grid cols basado en cantidad de secciones + brand + newsletter
-  const totalColumns = 2 + footerSections.length; // Brand + Secciones dinámicas + Newsletter
+  // Determinar grid cols basado en cantidad de secciones + brand
+  const totalColumns = 1 + footerSections.length; // Brand + Secciones dinámicas
   const gridClass = totalColumns <= 4
     ? `grid-cols-1 md:grid-cols-2 lg:grid-cols-${totalColumns}`
     : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4';
@@ -105,28 +105,6 @@ export const Footer = () => {
               </ul>
             </div>
           ))}
-
-          {/* 3. NEWSLETTER (siempre presente al final) */}
-          <div>
-            <h3 className="text-black font-medium tracking-widest text-sm uppercase mb-6">{siteName} Club</h3>
-            <p className="text-sm font-light text-stone-500 mb-6">
-              Suscríbete para recibir novedades exclusivas y un 10% OFF en tu primera compra.
-            </p>
-
-            <form className="relative group">
-              <input
-                type="email"
-                placeholder="Tu correo electrónico"
-                className="w-full bg-transparent border-b border-stone-300 py-3 text-sm focus:outline-none focus:border-black transition-colors placeholder-stone-400"
-              />
-              <button
-                type="button"
-                className="absolute right-0 top-3 text-stone-400 hover:text-black transition-colors"
-              >
-                <Send size={18} />
-              </button>
-            </form>
-          </div>
 
         </div>
 

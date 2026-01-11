@@ -3,14 +3,31 @@
 // ==================== ENUMS ====================
 
 export const OrderStatus = {
-    CREATED: 'CREATED',
-    SENT: 'SENT',
+    PENDING: 'PENDING',
     CONFIRMED: 'CONFIRMED',
+    SHIPPED: 'SHIPPED',
     CANCELLED: 'CANCELLED',
     COMPLETED: 'COMPLETED'
 } as const;
 
 export type OrderStatus = typeof OrderStatus[keyof typeof OrderStatus];
+
+export const ShippingMethod = {
+    PICKUP: 'PICKUP',
+    DELIVERY: 'DELIVERY'
+} as const;
+
+export type ShippingMethod = typeof ShippingMethod[keyof typeof ShippingMethod];
+
+export const PaymentMethod = {
+    CASH: 'CASH',
+    BANK_TRANSFER: 'BANK_TRANSFER',
+    CREDIT_CARD: 'CREDIT_CARD',
+    DEBIT_CARD: 'DEBIT_CARD',
+    MERCADOPAGO: 'MERCADOPAGO'
+} as const;
+
+export type PaymentMethod = typeof PaymentMethod[keyof typeof PaymentMethod];
 
 // ==================== REQUEST DTOs ====================
 
@@ -25,6 +42,10 @@ export interface OrderRequest {
     customerName: string;
     customerPhone: string;
     customerNote?: string;
+    shippingMethod: ShippingMethod;
+    shippingAddress?: string;
+    shippingNote?: string;
+    paymentMethod: PaymentMethod;
 }
 
 /**
@@ -65,6 +86,7 @@ export interface OrderSummaryResponse {
     status: OrderStatus;
     total: number;
     customerName: string;
+    paymentMethod: PaymentMethod;
     itemsCount: number;
     createdAt: string; // ISO date string
 }
@@ -79,6 +101,10 @@ export interface OrderResponse {
     customerName: string;
     customerPhone: string;
     customerNote?: string;
+    shippingMethod: ShippingMethod;
+    shippingAddress?: string;
+    shippingNote?: string;
+    paymentMethod: PaymentMethod;
     subtotal: number;
     total: number;
     createdAt: string;
@@ -89,17 +115,30 @@ export interface OrderResponse {
 // ==================== UI HELPERS ====================
 
 export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
-    CREATED: 'Creado',
-    SENT: 'Enviado a WA',
+    PENDING: 'Pendiente',
     CONFIRMED: 'Confirmado',
+    SHIPPED: 'Enviado',
     CANCELLED: 'Cancelado',
     COMPLETED: 'Completado'
 };
 
 export const ORDER_STATUS_COLORS: Record<OrderStatus, string> = {
-    CREATED: 'bg-stone-100 text-stone-800',
-    SENT: 'bg-blue-100 text-blue-800',
-    CONFIRMED: 'bg-indigo-100 text-indigo-800',
+    PENDING: 'bg-amber-100 text-amber-800',
+    CONFIRMED: 'bg-blue-100 text-blue-800',
+    SHIPPED: 'bg-indigo-100 text-indigo-800',
     CANCELLED: 'bg-red-100 text-red-800',
     COMPLETED: 'bg-green-100 text-green-800'
+};
+
+export const SHIPPING_METHOD_LABELS: Record<ShippingMethod, string> = {
+    PICKUP: 'Retiro en tienda',
+    DELIVERY: 'Envío a domicilio'
+};
+
+export const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
+    CASH: 'Efectivo',
+    BANK_TRANSFER: 'Transferencia',
+    CREDIT_CARD: 'Tarjeta de Crédito',
+    DEBIT_CARD: 'Tarjeta de Débito',
+    MERCADOPAGO: 'MercadoPago'
 };

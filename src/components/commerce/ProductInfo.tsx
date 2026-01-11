@@ -28,9 +28,9 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product, variant }) =>
         </h1>
         <div className="mt-4">
           <span className="text-3xl font-medium text-stone-900">
-            ${variant?.price.toLocaleString('es-AR', { 
+            ${variant?.price.toLocaleString('es-AR', {
               minimumFractionDigits: 2,
-              maximumFractionDigits: 2 
+              maximumFractionDigits: 2
             })}
           </span>
         </div>
@@ -39,7 +39,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product, variant }) =>
       {/* Stock Info */}
       {variant && (
         <div className="flex items-center gap-2 text-sm">
-          <Package size={16} className="text-stone-600" />
+          <Package size={16} className="text-stone-600" strokeWidth={1.5} />
           {variant.stock > 0 ? (
             <span className="text-green-600 font-medium">
               En stock ({variant.stock} disponibles)

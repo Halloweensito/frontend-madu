@@ -55,7 +55,7 @@ import {
 import { useOrders, useUpdateOrderStatus } from '@/hooks/useOrders';
 import { OrderStatusBadge } from './components';
 import type { OrderSummaryResponse, OrderStatus, OrderFilterRequest } from '@/types/order';
-import { ORDER_STATUS_LABELS, OrderStatus as OrderStatusEnum } from '@/types/order';
+import { ORDER_STATUS_LABELS, PAYMENT_METHOD_LABELS, OrderStatus as OrderStatusEnum } from '@/types/order';
 
 // Helper para formatear fecha
 function formatDate(dateString: string): string {
@@ -112,6 +112,10 @@ function OrderDetailDialog({
                             <p className="font-medium mt-1">
                                 <OrderStatusBadge status={order.status} />
                             </p>
+                        </div>
+                        <div>
+                            <span className="text-stone-500">Pago</span>
+                            <p className="font-medium">{PAYMENT_METHOD_LABELS[order.paymentMethod]}</p>
                         </div>
                         <div>
                             <span className="text-stone-500">Cliente</span>
@@ -455,6 +459,7 @@ export default function OrderList() {
                                 <TableHead>Cliente</TableHead>
                                 <TableHead className="w-[90px] text-center">Items</TableHead>
                                 <TableHead className="text-right w-[100px]">Total</TableHead>
+                                <TableHead className="w-[100px]">Pago</TableHead>
                                 <TableHead className="w-[130px]">Estado</TableHead>
                                 <TableHead className="w-[80px] text-center">Acciones</TableHead>
                             </TableRow>
@@ -476,6 +481,9 @@ export default function OrderList() {
                                     </TableCell>
                                     <TableCell className="text-right font-semibold">
                                         ${order.total.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
+                                    </TableCell>
+                                    <TableCell className="text-sm text-stone-600">
+                                        {PAYMENT_METHOD_LABELS[order.paymentMethod]}
                                     </TableCell>
                                     <TableCell>
                                         <OrderStatusBadge status={order.status} />

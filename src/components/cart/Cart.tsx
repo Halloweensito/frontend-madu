@@ -1,7 +1,7 @@
 // components/cart/Cart.tsx
 // Componente principal del carrito - Orquesta los subcomponentes
 
-import { ShoppingCart, X } from 'lucide-react';
+import { ShoppingCart, X, ArrowLeft } from 'lucide-react';
 import { useCartStore } from '@/stores/cartStore';
 import { useCartCheckout } from '@/hooks/useCartCheckout';
 
@@ -50,6 +50,7 @@ export function Cart() {
   } = useCartCheckout();
 
   const itemCount = getTotalItems();
+  const isCheckoutView = checkoutStep === 'form';
 
   return (
     <Sheet open={isCartOpen} onOpenChange={(open) => open ? openCart() : closeCart()}>
@@ -75,16 +76,33 @@ export function Cart() {
       <SheetContent className="w-full sm:max-w-md flex flex-col p-0 bg-white">
 
         {/* HEADER */}
-        <SheetHeader className="px-6 py-4 border-b border-stone-100 flex flex-row items-center justify-between">
+        <SheetHeader className="px-6 py-4 border-b border-stone-100 flex flex-row items-center justify-between shrink-0">
           <SheetTitle className="flex items-center justify-between flex-1">
-            <span className="font-light text-xl tracking-wide uppercase">Tu Carrito</span>
-            <Badge variant="secondary" className="font-normal">
-              {itemCount} {itemCount === 1 ? 'producto' : 'productos'}
-            </Badge>
+            {isCheckoutView ? (
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleBackToCart}
+                  className="p-1 -ml-1 hover:bg-stone-100 rounded-full transition-colors"
+                >
+                  <ArrowLeft size={20} strokeWidth={1.5} />
+                </button>
+                <span className="font-light text-xl tracking-wide">Datos del Pedido</span>
+              </div>
+            ) : (
+              <>
+                <span className="font-light text-xl tracking-wide uppercase">Tu Carrito</span>
+                <Badge variant="secondary" className="font-normal">
+                  {itemCount} {itemCount === 1 ? 'producto' : 'productos'}
+                </Badge>
+              </>
+            )}
           </SheetTitle>
 
           <SheetDescription className="sr-only">
-            Resumen de productos agregados al carrito para compra por WhatsApp.
+            {isCheckoutView
+              ? 'Completa tus datos para finalizar la compra por WhatsApp.'
+              : 'Resumen de productos agregados al carrito para compra por WhatsApp.'
+            }
           </SheetDescription>
 
           <SheetClose asChild>
@@ -94,47 +112,49 @@ export function Cart() {
           </SheetClose>
         </SheetHeader>
 
-        {/* BODY */}
-        <div className="flex-1 overflow-hidden flex flex-col">
-          {items.length === 0 ? (
-            <CartEmptyState onGoToShop={handleGoToShop} />
+        {/* BODY - Scrolleable */}
+        <ScrollArea className="flex-1">
+          {isCheckoutView ? (
+            /* Vista de Checkout */
+            <div className="px-6 py-4">
+              <CheckoutForm
+                onSubmit={handleCreateOrder}
+                onCancel={handleBackToCart}
+                isSubmitting={isCreatingOrder}
+              />
+            </div>
           ) : (
-            <ScrollArea className="flex-1 px-6">
-              <div className="divide-y divide-stone-100">
-                {items.map((item) => (
-                  <CartItem
-                    key={item.variantId}
-                    item={item}
-                    onUpdateQuantity={updateQuantity}
-                    onRemove={removeItem}
-                  />
-                ))}
-              </div>
-            </ScrollArea>
+            /* Vista del Carrito */
+            <>
+              {items.length === 0 ? (
+                <CartEmptyState onGoToShop={handleGoToShop} />
+              ) : (
+                <div className="px-6 divide-y divide-stone-100">
+                  {items.map((item) => (
+                    <CartItem
+                      key={item.variantId}
+                      item={item}
+                      onUpdateQuantity={updateQuantity}
+                      onRemove={removeItem}
+                    />
+                  ))}
+                </div>
+              )}
+            </>
           )}
-        </div>
+        </ScrollArea>
 
-        {/* ERRORES DE VALIDACIÓN */}
-        <CartValidationErrors errors={validationErrors} />
+        {/* ERRORES DE VALIDACIÓN (solo en vista carrito) */}
+        {!isCheckoutView && <CartValidationErrors errors={validationErrors} />}
 
-        {/* FOOTER / CHECKOUT */}
-        {items.length > 0 && checkoutStep === 'cart' && (
+        {/* FOOTER (solo en vista carrito con items) */}
+        {!isCheckoutView && items.length > 0 && (
           <CartFooter
             totalPrice={getTotalPrice()}
             isValidating={isValidating}
             onCheckout={handleCheckout}
             onClearCart={clearCart}
           />
-        )}
-
-        {items.length > 0 && checkoutStep === 'form' && (
-          <div className="border-t border-stone-100 bg-stone-50/50 p-6">
-            <CheckoutForm
-              onSubmit={handleCreateOrder}
-              onCancel={handleBackToCart}
-              isSubmitting={isCreatingOrder}
-            />
-          </div>
         )}
 
       </SheetContent>
