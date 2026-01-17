@@ -39,12 +39,13 @@ export function ProductPricingSection({ control, hidePricing = false }: ProductP
                 <CardTitle>Precio y Stock</CardTitle>
                 <CardDescription>
                     {hidePricing
-                        ? "Gestiona el estado del producto (El precio y stock se gestionan en las variantes)"
-                        : "Valores por defecto para las variantes"}
+                        ? "El precio y stock se gestionan en cada variante."
+                        : "Definí el precio y stock del producto."}
                 </CardDescription>
+
             </CardHeader>
             <CardContent className="space-y-4">
-                {/* Precio y Stock (Visible solo si NO hay variantes) */}
+                {/* Precio y Stock - Solo visible si NO hay variantes */}
                 {!hidePricing && (
                     <>
                         <FormField
@@ -52,12 +53,12 @@ export function ProductPricingSection({ control, hidePricing = false }: ProductP
                             name="defaultPrice"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Precio por Defecto ($) *</FormLabel>
+                                    <FormLabel>Precio *</FormLabel>
                                     <FormControl>
                                         <Input
                                             type="number"
                                             step="0.01"
-                                            min="0.01"
+                                            min="0"
                                             placeholder="0.00"
                                             {...field}
                                             onFocus={(e) => e.target.select()}
@@ -77,7 +78,7 @@ export function ProductPricingSection({ control, hidePricing = false }: ProductP
                             name="defaultStock"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Stock por Defecto *</FormLabel>
+                                    <FormLabel>Stock *</FormLabel>
                                     <FormControl>
                                         <Input
                                             type="number"

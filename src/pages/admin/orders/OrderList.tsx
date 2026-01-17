@@ -531,8 +531,8 @@ export default function OrderList() {
             {!isLoading && !error && ordersData && (
                 <PaginationControls
                     currentPage={currentPage}
-                    totalPages={ordersData.totalPages}
-                    totalElements={ordersData.totalElements}
+                    totalPages={ordersData.page.totalPages}
+                    totalElements={ordersData.page.totalElements}
                     pageSize={pageSize}
                     onPageChange={setCurrentPage}
                     isLoading={isLoading}

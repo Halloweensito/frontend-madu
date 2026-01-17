@@ -40,12 +40,16 @@ export function AttributeCard({
         <div className="flex justify-between items-start mb-3">
           <div className="flex items-center gap-2">
             <span className="font-semibold text-sm">
-              {attribute.attributeName || `Atributo ${attribute.attributeId}`}
+              {attribute.attributeName || `Opcion ${attribute.attributeId}`}
             </span>
             {isGlobalAttribute ? (
-              <Badge variant="secondary" className="text-xs">Global</Badge>
+              <Badge variant="secondary" className="text-xs" title="Reutilizable en otros productos">
+                Reutilizable
+              </Badge>
             ) : (
-              <Badge variant="outline" className="text-xs">Personalizado</Badge>
+              <Badge variant="outline" className="text-xs" title="Solo disponible en este producto">
+                Solo este producto
+              </Badge>
             )}
           </div>
           <div className="flex gap-1">
@@ -56,7 +60,7 @@ export function AttributeCard({
                 size="icon"
                 className="h-8 w-8"
                 onClick={() => onToggleEditMode(attribute.attributeId)}
-                title={isEditing ? "Terminar edición" : "Editar valores"}
+                title={isEditing ? "Guardar cambios" : "Editar valores"}
               >
                 {isEditing ? (
                   <Check className="h-4 w-4 text-green-600" />
@@ -71,7 +75,7 @@ export function AttributeCard({
               size="icon"
               className="h-8 w-8"
               onClick={() => onRemoveAttribute(index)}
-              title="Eliminar atributo completo"
+              title="Eliminar opción"
             >
               <Trash2 className="h-4 w-4 text-red-500" />
             </Button>
@@ -109,7 +113,7 @@ export function AttributeCard({
                       onRemoveValue(index, v.id);
                     }}
                     className="ml-1.5 text-red-500 hover:text-red-700 opacity-0 group-hover:opacity-100 transition-opacity"
-                    title="Eliminar este valor"
+                    title="Quitar valor"
                   >
                     <X className="h-3 w-3" />
                   </button>
@@ -123,7 +127,7 @@ export function AttributeCard({
         {isEditing && isGlobalAttribute && (
           <div className="flex gap-2 mt-3 pt-3 border-t border-stone-200">
             <Input
-              placeholder="Agregar nuevo valor..."
+              placeholder="Nuevo valor (ej: Rojo, M, 500ml)"
               value={editingValueInput}
               onChange={(e) => onEditingValueInputChange(e.target.value)}
               onKeyDown={(e) => {

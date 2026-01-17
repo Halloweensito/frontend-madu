@@ -241,8 +241,8 @@ export default function ProductList() {
       {!isLoading && !error && productsData && (
         <PaginationControls
           currentPage={currentPage}
-          totalPages={productsData.totalPages}
-          totalElements={productsData.totalElements}
+          totalPages={productsData.page.totalPages}
+          totalElements={productsData.page.totalElements}
           pageSize={pageSize}
           onPageChange={setCurrentPage}
           isLoading={isLoading}

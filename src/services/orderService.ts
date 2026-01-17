@@ -11,10 +11,12 @@ import type {
 
 interface PaginatedResponse<T> {
     content: T[];
-    totalElements: number;
-    totalPages: number;
-    number: number;
-    size: number;
+    page: {
+        size: number;
+        number: number;
+        totalElements: number;
+        totalPages: number;
+    };
 }
 
 export const orderService = {

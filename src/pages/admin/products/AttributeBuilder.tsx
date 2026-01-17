@@ -3,8 +3,8 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { type Attribute, type AttributeConfig } from "@/types/types";
 import { useAttributeBuilder } from "@/hooks/useAttributeBuilder";
-import { AttributeCard } from "@/components/AttributeCard";
-import { AttributeForm } from "@/components/AttributeForm";
+import { AttributeCard } from "@/pages/admin/products/components/AttributeCard";
+import { AttributeForm } from "@/pages/admin/products/components/AttributeForm";
 
 interface AttributeBuilderProps {
   globalAttributes: Attribute[];

@@ -37,8 +37,8 @@ export function useSearch(initialQuery: string = '') {
 
         // Resultados
         products: data?.content || [],
-        totalElements: data?.totalElements || 0,
-        totalPages: data?.totalPages || 0,
+        totalElements: data?.page?.totalElements || 0,
+        totalPages: data?.page?.totalPages || 0,
 
         // Estados de carga
         isLoading,

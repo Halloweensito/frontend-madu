@@ -34,11 +34,29 @@ export const http = async <T>(endpoint: string, options: RequestInit = {}): Prom
     });
 
     if (!res.ok) {
-      const message = await res.text();
+      const responseText = await res.text();
+      let errorMessage = "Error en la solicitud";
+
+      // Intentar parsear el error como JSON del backend
+      try {
+        const errorJson = JSON.parse(responseText);
+        // Usar el mensaje del backend si existe
+        if (errorJson.message) {
+          errorMessage = errorJson.message;
+        } else if (errorJson.error) {
+          errorMessage = errorJson.error;
+        }
+      } catch {
+        // Si no es JSON, usar el texto raw si tiene contenido
+        if (responseText && responseText.trim()) {
+          errorMessage = responseText;
+        }
+      }
+
       const error = new ApiError(
         res.status,
         res.statusText,
-        message || "Error en la solicitud",
+        errorMessage,
         endpoint,
         method
       );

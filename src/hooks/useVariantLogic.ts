@@ -276,13 +276,18 @@ export function useVariantLogic({
           };
         }
 
+        // Usar la primera imagen general como default para nuevas variantes
+        const defaultImageUrl = generalImages.length > 0 ? generalImages[0].url : undefined;
+        const defaultImageTempId = generalImages.length > 0 ? generalImages[0].tempId : undefined;
+
         return {
           sku: "",
           price: defaultPrice || 0,
           stock: defaultStock || 0,
           attributeValueIds,
           displayName,
-          selectedImageUrl: undefined,
+          selectedImageUrl: defaultImageUrl,
+          selectedImageTempId: defaultImageTempId,
         };
       });
 

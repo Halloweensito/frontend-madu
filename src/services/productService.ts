@@ -12,16 +12,16 @@ import type {
 } from "../types/types";
 
 /**
- * Interfaz para respuestas paginadas del backend
+ * Interfaz para respuestas paginadas del backend (Spring Boot 3.x format)
  */
 interface PageResponse<T> {
   content: T[];
-  totalElements: number;
-  totalPages: number;
-  size: number;
-  number: number;
-  first: boolean;
-  last: boolean;
+  page: {
+    size: number;
+    number: number;
+    totalElements: number;
+    totalPages: number;
+  };
 }
 
 export const productService = {

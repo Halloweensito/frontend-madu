@@ -44,11 +44,11 @@ export function ProductVariantsSection({
     const isEditMode = !!productId;
 
     return (
-        <Card>
+        <Card className="overflow-hidden">
             <CardHeader>
-                <CardTitle>Opciones del Producto</CardTitle>
+                <CardTitle>Opciones del producto</CardTitle>
                 <CardDescription>
-                    Agrega opciones como Talla o Color. Solo se pueden usar atributos de tipo SELECT.
+                    Agregá opciones como color o talle para crear variantes del producto.
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -56,12 +56,12 @@ export function ProductVariantsSection({
                 {isLoadingAttributes ? (
                     <div className="flex items-center justify-center p-8">
                         <Loader2 className="h-6 w-6 animate-spin text-stone-400" />
-                        <span className="ml-2 text-sm text-stone-500">Cargando atributos...</span>
+                        <span className="ml-2 text-sm text-stone-500">Cargando opciones disponibles...</span>
                     </div>
                 ) : attributesError ? (
                     <div className="flex items-center gap-2 p-4 text-sm text-red-600 bg-red-50 rounded-md">
                         <AlertCircle className="h-4 w-4" />
-                        <span>Error al cargar atributos. Por favor, recarga la página.</span>
+                        <span>Error al cargar opciones. Por favor, recargá la página.</span>
                     </div>
                 ) : (
                     <AttributeBuilder
@@ -85,19 +85,26 @@ export function ProductVariantsSection({
 
                 {/* Generador de Variantes */}
                 {attributesConfig && attributesConfig.length > 0 && (
-                    <div className="pt-4 border-t">
-                        <h3 className="text-sm font-semibold mb-4 text-stone-900">
-                            Inventario de Variantes
-                        </h3>
-                        <VariantGenerator
-                            config={attributesConfig}
-                            form={form}
-                            defaultPrice={defaultPrice}
-                            defaultStock={defaultStock}
-                            existingVariants={isEditMode ? initialVariants : undefined}
-                            productId={productId}
-                            generalImages={generalImages}
-                        />
+                    <div className="pt-4 border-t -mx-6">
+                        <div className="px-6">
+                            <h3 className="text-sm font-semibold mb-2 text-stone-900">
+                                Variantes del producto
+                            </h3>
+                            <p className="text-sm text-stone-500 mb-3">
+                                Cada combinación de opciones crea una variante.
+                            </p>
+                        </div>
+                        <div className="min-w-0">
+                            <VariantGenerator
+                                config={attributesConfig}
+                                form={form}
+                                defaultPrice={defaultPrice}
+                                defaultStock={defaultStock}
+                                existingVariants={isEditMode ? initialVariants : undefined}
+                                productId={productId}
+                                generalImages={generalImages}
+                            />
+                        </div>
                     </div>
                 )}
 

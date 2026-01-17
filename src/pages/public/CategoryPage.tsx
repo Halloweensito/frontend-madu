@@ -89,8 +89,8 @@ export const CategoryPage: React.FC = () => {
 
   const breadcrumbItems = buildBreadcrumbItems();
   const products = productsData?.content || [];
-  const totalPages = productsData?.totalPages || 0;
-  const totalElements = productsData?.totalElements || 0;
+  const totalPages = productsData?.page?.totalPages || 0;
+  const totalElements = productsData?.page?.totalElements || 0;
 
   return (
     <div className="w-full bg-stone-50 min-h-screen">

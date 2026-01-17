@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { type Attribute, type AttributeConfig } from "@/types/types";
 import { useCreateAttribute, useCreateAttributeValue, useAttributes } from "@/hooks/useCatalog";
 import { logger } from "@/utils/logger";
+import { toast } from "sonner";
 
 interface TempValue {
   id: number;
@@ -23,7 +24,7 @@ export function useAttributeBuilder({
   currentAttributes,
   onAttributesChange,
 }: UseAttributeBuilderProps) {
-  
+
   // ==================== Estado ====================
   const [isAdding, setIsAdding] = useState(false);
   const [editingAttributeId, setEditingAttributeId] = useState<number | null>(null);
@@ -32,7 +33,7 @@ export function useAttributeBuilder({
   const [customName, setCustomName] = useState("");
   const [currentValueInput, setCurrentValueInput] = useState("");
   const [currentValues, setCurrentValues] = useState<TempValue[]>([]);
-  
+
   const pendingEditAttributeIdRef = useRef<number | null>(null);
 
   // ==================== Mutations ====================
@@ -50,7 +51,7 @@ export function useAttributeBuilder({
   const generateSlug = (value: string): string => {
     return value
       .toLowerCase()
-      .normalize("NFD")     
+      .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
       .replace(/[^a-z0-9\s-]/g, "")
       .trim()
@@ -80,7 +81,7 @@ export function useAttributeBuilder({
             hexColor: tempValue.hexColor,
           },
         });
-        
+
         return {
           id: createdValue.id,
           value: createdValue.value || createdValue.slug || tempValue.value.trim(),
@@ -161,23 +162,23 @@ export function useAttributeBuilder({
     if (isCustomMode) {
       finalName = customName.trim();
       if (!finalName) {
-        alert("Por favor ingresa un nombre para el atributo personalizado");
+        toast.error("Por favor ingresa un nombre para el atributo personalizado");
         return;
       }
     } else if (selectedGlobalAttribute) {
       if (isAttributeAlreadyUsed(selectedGlobalAttribute.id)) {
-        alert(`El atributo "${selectedGlobalAttribute.name}" ya está siendo usado`);
+        toast.error(`El atributo "${selectedGlobalAttribute.name}" ya está siendo usado`);
         return;
       }
       finalName = selectedGlobalAttribute.name || `Atributo ${selectedGlobalAttribute.id}`;
       finalId = selectedGlobalAttribute.id;
     } else {
-      alert("Selecciona un tipo de atributo");
+      toast.error("Selecciona un tipo de atributo");
       return;
     }
 
     if (currentValues.length === 0) {
-      alert("Agrega al menos un valor");
+      toast.error("Agrega al menos un valor");
       return;
     }
 
@@ -197,7 +198,7 @@ export function useAttributeBuilder({
         const createdValues = await createAttributeValuesInParallel(finalId, currentValues);
 
         if (createdValues.length === 0) {
-          alert("Error: No se pudieron crear los valores del atributo.");
+          toast.error("Error: No se pudieron crear los valores del atributo.");
           return;
         }
 
@@ -237,7 +238,7 @@ export function useAttributeBuilder({
         if (newValues.length > 0) {
           const createdValues = await createAttributeValuesInParallel(finalId!, newValues);
           if (createdValues.length === 0 && newValues.length > 0) {
-            alert("Error: No se pudieron crear los valores nuevos.");
+            toast.error("Error: No se pudieron crear los valores nuevos.");
             return;
           }
           allValues = [...allValues, ...createdValues.map(v => ({ ...v, position: v.position ?? 0, hexColor: v.hexColor ?? undefined }))];
@@ -255,8 +256,9 @@ export function useAttributeBuilder({
         resetForm();
       }
     } catch (error) {
-      console.error("Error al guardar atributo:", error);
-      alert("Error al guardar el atributo. Por favor, intenta de nuevo.");
+      logger.error("Error al guardar atributo:", error);
+      const message = error instanceof Error ? error.message : "Error al guardar el atributo";
+      toast.error(message);
     }
   };
 
@@ -272,7 +274,7 @@ export function useAttributeBuilder({
     const globalAttr = effectiveAttributes?.find(a => a.id === attr.attributeId);
 
     if (attr.selectedValues.some(v => v.value.toLowerCase() === valTrimmed.toLowerCase())) {
-      alert("Este valor ya está agregado");
+      toast.error("Este valor ya está agregado");
       return;
     }
 
@@ -333,14 +335,15 @@ export function useAttributeBuilder({
         }
       }
     } catch (error) {
-      console.error("Error al agregar valor:", error);
-      alert("Error al agregar el valor.");
+      logger.error("Error al agregar valor:", error);
+      const message = error instanceof Error ? error.message : "Error al agregar el valor";
+      toast.error(message);
     }
   };
 
   const handleRemoveValue = (attrIndex: number, valueId: number) => {
     const attr = currentAttributes[attrIndex];
-    
+
     if (attr.selectedValues.length <= 1) {
       if (editingAttributeId === attr.attributeId) {
         setEditingAttributeId(null);
@@ -360,22 +363,22 @@ export function useAttributeBuilder({
       ...attr,
       selectedValues: attr.selectedValues.filter(v => v.id !== valueId)
     };
-    
+
     onAttributesChange(updatedAttributes);
   };
 
   const removeAttribute = (index: number) => {
     const attrToRemove = currentAttributes[index];
-    
+
     if (attrToRemove && editingAttributeId === attrToRemove.attributeId) {
       setEditingAttributeId(null);
       setEditingValueInput("");
     }
-    
+
     if (attrToRemove && pendingEditAttributeIdRef.current === attrToRemove.attributeId) {
       pendingEditAttributeIdRef.current = null;
     }
-    
+
     const next = [...currentAttributes];
     next.splice(index, 1);
     onAttributesChange(next);
@@ -398,7 +401,7 @@ export function useAttributeBuilder({
     if (pendingEditAttributeIdRef.current !== null) {
       const targetAttributeId = pendingEditAttributeIdRef.current;
       const attributeExists = currentAttributes.some(attr => attr.attributeId === targetAttributeId);
-      
+
       if (attributeExists) {
         setEditingAttributeId(targetAttributeId);
         setEditingValueInput("");
@@ -423,17 +426,17 @@ export function useAttributeBuilder({
     currentValueInput,
     setCurrentValueInput,
     currentValues,
-    
+
     // Computed
     effectiveAttributes,
     isCustomMode,
     selectedGlobalAttribute,
     selectAttributes,
-    
+
     // Mutations
     createAttributeMutation,
     createAttributeValueMutation,
-    
+
     // Handlers
     handleAddValue,
     removeValue,

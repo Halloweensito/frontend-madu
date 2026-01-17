@@ -63,7 +63,7 @@ export function AttributeForm({
       <CardContent className="p-4 space-y-4">
         {/* Header */}
         <div className="flex justify-between items-center">
-          <h4 className="font-semibold text-sm">Configurar Atributo</h4>
+          <h4 className="font-semibold text-sm">Agregar opcion</h4>
           <Button
             type="button"
             variant="ghost"
@@ -78,19 +78,19 @@ export function AttributeForm({
         <div className="space-y-4">
           {/* Attribute Selector */}
           <div className="space-y-2">
-            <Label>Tipo de Atributo</Label>
+            <Label>Tipo de opcion</Label>
             <Select value={selectedGlobalId} onValueChange={onSelectedGlobalIdChange}>
               <SelectTrigger>
                 <SelectValue placeholder="Seleccionar..." />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="new_custom" className="font-medium">
-                  ✨ Crear Atributo Personalizado
+                  Crear opcion nueva
                 </SelectItem>
                 {selectAttributes.length > 0 && (
                   <>
                     <div className="px-2 py-1.5 text-xs font-medium text-stone-500">
-                      Atributos Globales
+                      Opciones existentes
                     </div>
                     {selectAttributes.map(attr => (
                       <SelectItem
@@ -99,7 +99,7 @@ export function AttributeForm({
                         disabled={isAttributeAlreadyUsed(attr.id)}
                       >
                         {attr.name}
-                        {isAttributeAlreadyUsed(attr.id) && " (ya usado)"}
+                        {isAttributeAlreadyUsed(attr.id) && " (ya agregada)"}
                       </SelectItem>
                     ))}
                   </>
@@ -110,7 +110,7 @@ export function AttributeForm({
             {/* Custom Name Input */}
             {isCustomMode && (
               <Input
-                placeholder="Ej: Material, Estilo..."
+                placeholder="Nombre de la opción (ej: Material, Estilo)"
                 value={customName}
                 onChange={e => onCustomNameChange(e.target.value)}
                 className="mt-2"
@@ -121,13 +121,13 @@ export function AttributeForm({
           {/* Values Input */}
           {(selectedGlobalId || isCustomMode) && (
             <div className="space-y-2">
-              <Label>Valores</Label>
+              <Label>Valores de la opción</Label>
               <div className="flex gap-2">
                 <Input
                   placeholder={
                     selectedGlobalAttribute
-                      ? "Escribe un valor..."
-                      : "Escribe valores..."
+                      ? "Agregar valor (ej: Rojo, M, 500ml)"
+                      : "Agregar valores (ej: Rojo, M, 500ml)"
                   }
                   value={currentValueInput}
                   onChange={e => onCurrentValueInputChange(e.target.value)}
@@ -141,7 +141,7 @@ export function AttributeForm({
                   disabled={!currentValueInput.trim()}
                   className="shrink-0"
                 >
-                  Agregar
+                  Agregar valor
                 </Button>
               </div>
 
@@ -190,10 +190,10 @@ export function AttributeForm({
           {isSaving ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Creando...
+              Guardando opción...
             </>
           ) : (
-            "Guardar Atributo"
+            "Guardar opción"
           )}
         </Button>
       </CardContent>

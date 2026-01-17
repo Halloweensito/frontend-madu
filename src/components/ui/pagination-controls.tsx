@@ -21,13 +21,19 @@ export function PaginationControls({
     onPageChange,
     isLoading = false,
 }: PaginationControlsProps) {
-    const startItem = currentPage * pageSize + 1;
-    const endItem = Math.min((currentPage + 1) * pageSize, totalElements);
+    // Safeguards para valores inválidos
+    const safeTotalElements = Number.isFinite(totalElements) ? totalElements : 0;
+    const safePageSize = Number.isFinite(pageSize) && pageSize > 0 ? pageSize : 10;
+    const safeTotalPages = Number.isFinite(totalPages) ? totalPages : 1;
+    const safeCurrentPage = Number.isFinite(currentPage) ? currentPage : 0;
 
-    const canGoPrevious = currentPage > 0;
-    const canGoNext = currentPage < totalPages - 1;
+    const startItem = safeTotalElements > 0 ? safeCurrentPage * safePageSize + 1 : 0;
+    const endItem = Math.min((safeCurrentPage + 1) * safePageSize, safeTotalElements);
 
-    if (totalElements === 0) return null;
+    const canGoPrevious = safeCurrentPage > 0;
+    const canGoNext = safeCurrentPage < safeTotalPages - 1;
+
+    if (safeTotalElements === 0) return null;
 
     return (
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 px-2">
@@ -35,7 +41,7 @@ export function PaginationControls({
             <div className="text-sm text-stone-500 order-2 sm:order-1">
                 Mostrando <span className="font-medium text-stone-900">{startItem}</span> a{" "}
                 <span className="font-medium text-stone-900">{endItem}</span> de{" "}
-                <span className="font-medium text-stone-900">{totalElements}</span> resultados
+                <span className="font-medium text-stone-900">{safeTotalElements}</span> resultados
             </div>
 
             {/* Botones de navegación */}
@@ -57,7 +63,7 @@ export function PaginationControls({
                     variant="outline"
                     size="icon"
                     className="h-8 w-8"
-                    onClick={() => onPageChange(currentPage - 1)}
+                    onClick={() => onPageChange(safeCurrentPage - 1)}
                     disabled={!canGoPrevious || isLoading}
                     title="Anterior"
                 >
@@ -66,9 +72,9 @@ export function PaginationControls({
 
                 {/* Indicador de página */}
                 <div className="flex items-center gap-1 px-2 text-sm">
-                    <span className="font-medium">{currentPage + 1}</span>
+                    <span className="font-medium">{safeCurrentPage + 1}</span>
                     <span className="text-stone-400">/</span>
-                    <span className="text-stone-500">{totalPages || 1}</span>
+                    <span className="text-stone-500">{safeTotalPages || 1}</span>
                 </div>
 
                 {/* Página siguiente */}
@@ -76,7 +82,7 @@ export function PaginationControls({
                     variant="outline"
                     size="icon"
                     className="h-8 w-8"
-                    onClick={() => onPageChange(currentPage + 1)}
+                    onClick={() => onPageChange(safeCurrentPage + 1)}
                     disabled={!canGoNext || isLoading}
                     title="Siguiente"
                 >
@@ -88,7 +94,7 @@ export function PaginationControls({
                     variant="outline"
                     size="icon"
                     className="h-8 w-8"
-                    onClick={() => onPageChange(totalPages - 1)}
+                    onClick={() => onPageChange(safeTotalPages - 1)}
                     disabled={!canGoNext || isLoading}
                     title="Última página"
                 >
